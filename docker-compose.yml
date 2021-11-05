@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  node_server:
+    build:
+      context: .
+    #image: node-server-image
+    #container_name: node-server-container
+    command: ../node_modules/.bin/nodemon server.js
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/usr/src/node_server/app:delegated
+      # bind-mounting these two files in will let you add packages during development without rebuilding
+      # for example, to add bower to your app while developing, just install it inside the container
+      # and then nodemon will restart. Your changes will last until you "docker-compose down" and will
+      # be saved on host for next build
+      # NOTE: this won't work on Docker Toolbox (virtualbox) which doesn't bind-mount single files
+      # docker-compose exec node npm install --save bower
+      - ./package.json:/usr/src/node_server/package.json
+      - ./package-lock.json:/usr/src/node_server/package-lock.json
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in container so it won't conflict with our
+      # /opt/node_app/node_modules location.
+      - notused:/usr/src/node_server/app/node_modules
+      - notused:/usr/src/node_server/app/client
+    env_file: ./config/dev.env
+
+  react_server:
+    build:
+      context: ./client
+    #image: react-server-image
+    #container_name: react-server-container
+    command: ../node_modules/.bin/react-scripts start
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/usr/src/react_server/app:delegated
+      - ./client/package.json:/usr/src/react_server/package.json
+      - ./client/package-lock.json:/usr/src/react_server/package-lock.json
+      - notused:/usr/src/react_server/app/node_modules
+    #environment:
+    #  - PROXY=http://node_server:5000
+
+volumes:
+  notused:
