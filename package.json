@@ -1,7 +1,7 @@
 {
-  "name": "simple-ctfd-clone",
+  "name": "airline-reservation-system",
   "version": "1.0.0",
-  "description": "A Simple Full Stack Clone of ctfd.io",
+  "description": "An Airline Reservation Website Implmented in full-stack",
   "main": "server.js",
   "scripts": {
     "client-install": "npm install --prefix client",
@@ -14,6 +14,7 @@
   "author": "Vineet Vatsal",
   "license": "MIT",
   "dependencies": {
+    "amadeus": "^5.7.0",
     "concurrently": "^6.2.0",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
