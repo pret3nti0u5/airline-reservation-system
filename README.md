@@ -1,6 +1,6 @@
-# Some MERN Boiler Plate Code
+# Airline Reservation Website
 
-### This some MERN Boilerplate code along with a boilerplate READEM.md.
+### A website to facilitate Airline Reservation.
 
 <div align="center"><img src="" alt="insert project image here" width="1000" /></div>
 <br/>
@@ -14,8 +14,8 @@
 This method requires `node version 12+` and `npm version 6.4+` installed on your machine.
 
 ```zsh
-git clone https://github.com/pret3nti0u5/forum-like-quora.git
-cd forum-like-quora
+git clone https://github.com/pret3nti0u5/airline-reservation-system.git
+cd airline-reservation-system
 npm i                   #Install server side dependencies
 npm run client-install  #Install client side dependencies
 npm run dev             #You will have to setup all the required env variable in ./config/dev.env for this to work perfectly
