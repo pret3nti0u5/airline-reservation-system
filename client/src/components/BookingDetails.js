@@ -2,23 +2,105 @@ import React, { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import visLogo from '../assets/images/visLogo.svg';
+import aiLogo from '../assets/images/aiLogo.svg';
+import SeatMap from './SeatMap';
 
 class BookingDetails extends React.Component {
-  state = { title: 'Mr.' };
+  state = {
+    title: 'Mr.',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    email: '',
+    mobileNo: '',
+    selectedSeat: '',
+    payActive: false,
+  };
+
+  componentDidUpdate() {
+    if (
+      this.state.firstName !== '' &&
+      this.state.lastName !== '' &&
+      this.state.email !== '' &&
+      this.state.mobileNo.length === 10 &&
+      this.validateEmail(this.state.email) &&
+      this.state.selectedSeat !== '' &&
+      !this.state.payActive
+    ) {
+      this.setState({ payActive: true });
+    } else if (
+      this.state.payActive &&
+      (this.state.firstName === '' ||
+        this.state.lastName === '' ||
+        this.state.email === '' ||
+        this.state.mobileNo.length !== 10 ||
+        !this.validateEmail(this.state.email) ||
+        this.state.selectedSeat === '')
+    ) {
+      this.setState({ payActive: false });
+    }
+  }
+
+  selectSeatCb = (selectedSeat) => {
+    this.setState({ selectedSeat });
+  };
+
+  validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   classNames(...classes) {
     return classes.filter(Boolean).join(' ');
   }
 
-  renderInput(placeholder) {
+  handleClassType = (classType) => {
+    return classType
+      .split('_')
+      .map((word) => {
+        return word[0].toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join(' ');
+  };
+
+  handleStateChange = (e, stateName) => {
+    switch (stateName) {
+      case 'firstName':
+      case 'middleName':
+      case 'lastName':
+        if (e.target.value.match(/^[a-zA-Z]+$/) || e.target.value === '') {
+          this.setState({ [stateName]: e.target.value });
+        }
+        break;
+
+      case 'mobileNo':
+        if (/^\d{1,10}$/.test(e.target.value) || e.target.value === '') {
+          this.setState({ [stateName]: e.target.value });
+        }
+        break;
+      case 'email':
+        this.setState({ [stateName]: e.target.value.trim() });
+        break;
+      default:
+        break;
+    }
+  };
+
+  renderInput(placeholder, required, stateName) {
     return (
       <div className='relative'>
         <input
+          required={required}
           id={placeholder}
           name={placeholder}
           type='text'
-          className='w-11/12 peer ml-4 p-2 bg-transparent border-2 border-gray-500 rounded-md text-gray-900 font-bold text-xl font-poppins placeholder-transparent'
+          className='w-11/12 peer ml-4 p-2 bg-transparent border-2 border-gray-500 rounded-md text-gray-900 font-bold text-xl font-poppins placeholder-transparent focus:ring-0 focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50'
           placeholder={placeholder}
+          value={this.state[stateName]}
+          onChange={(e) => this.handleStateChange(e, stateName)}
         />
         <label
           htmlFor={placeholder}
@@ -33,50 +115,80 @@ class BookingDetails extends React.Component {
     );
   }
 
-  renderBooking() {
+  renderBooking({
+    departureAt,
+    arrivalAt,
+    departureIata,
+    arrivalIata,
+    carrierCode,
+    grandTotal,
+    duration,
+    classType,
+    stopsString,
+  }) {
+    const departureObj = new Date(departureAt);
+    const arrivalObj = new Date(arrivalAt);
     return (
       <div className='w-3/6 h-56 rounded-lg shadow-lg bg-offerPrimary p-4 mb-12'>
         <div className='flex w-full'>
           <p className='p-2 max-w-max font-poppins font-bold text-gray-700 text-lg bg-gray-400 rounded-md'>
-            Economy
+            {this.handleClassType(classType)}
           </p>
         </div>
         <p className='mt-2 font-bold font-poppins text-offerSecondary text-5xl'>
-          INR 10,000
+          {`INR ${grandTotal}`}
         </p>
         <div className='flex mt-2 border-2 border-gray-500 rounded-lg py-2 px-6 items-center'>
           <div className='flex flex-col'>
             <p className='text-offerSecondary text-3xl font-poppins text-center font-bold'>
-              20
+              {`${departureObj.getDate()}`}
             </p>
             <p className='text-offerSecondary text-lg font-poppins text-center font-bold'>
-              Nov
+              {`${departureObj.toLocaleString('default', {
+                month: 'short',
+              })}`}
             </p>
           </div>
-          <img src={visLogo} alt='visa logo' className='ml-4 rounded-md' />
+          <img
+            src={`${carrierCode === 'UK' ? visLogo : aiLogo}`}
+            alt='visa logo'
+            className='ml-4 rounded-md'
+          />
           <div className='flex flex-col ml-4'>
             <p className='text-offerSecondary text-xl font-poppins text-center font-bold'>
-              18:00
+              {`${departureObj
+                .getHours()
+                .toString()
+                .padStart(2, '0')}:${departureObj
+                .getMinutes()
+                .toString()
+                .padStart(2, '0')}`}
             </p>
             <p className='text-offerSecondary text-lg font-poppins text-center font-bold'>
-              GOI
+              {departureIata}
             </p>
           </div>
           <div className='flex flex-col flex-grow ml-4'>
             <p className='text-offerSecondary text-2xl font-poppins text-center font-bold'>
-              2H40M
+              {duration}
             </p>
             <div className='h-px bg-gray-700'></div>
             <p className='text-primrary text-lg font-poppins text-center font-bold'>
-              based stops
+              {stopsString}
             </p>
           </div>
           <div className='flex flex-col ml-4'>
             <p className='text-offerSecondary text-xl font-poppins text-center font-bold'>
-              18:00
+              {`${arrivalObj
+                .getHours()
+                .toString()
+                .padStart(2, '0')}:${arrivalObj
+                .getMinutes()
+                .toString()
+                .padStart(2, '0')}`}
             </p>
             <p className='text-offerSecondary text-lg font-poppins text-center font-bold'>
-              IXC
+              {arrivalIata}
             </p>
           </div>
         </div>
@@ -87,7 +199,7 @@ class BookingDetails extends React.Component {
   render() {
     return (
       <div className='flex flex-col min-h-full items-center bg-gradient-to-b from-primrary via-gradient2 to-gradient3 p-5'>
-        {this.renderBooking()}
+        {this.renderBooking(this.props.location.state)}
         <div className='w-3/6 rounded-lg shadow-lg bg-offerPrimary p-4 mb-12'>
           <p className='font-bold text-5xl text-left font-poppins mb-3'>
             Traveller Details
@@ -164,17 +276,37 @@ class BookingDetails extends React.Component {
                   </Transition>
                 </Menu>
               </div>
-              {this.renderInput('First Name')}
-              {this.renderInput('Middle Name')}
-              {this.renderInput('Last Name')}
+              {this.renderInput('First Name', true, 'firstName')}
+              {this.renderInput('Middle Name', false, 'middleName')}
+              {this.renderInput('Last Name', true, 'lastName')}
             </div>
             <p className='p-2 mt-5 max-w-max font-poppins font-bold text-gray-700 text-lg bg-gray-400 rounded-md'>
               Contact Details
             </p>
             <div className='flex mt-5 flex-start ml-[-16px]'>
-              {this.renderInput('Mobile No.')}
-              {this.renderInput('Email')}
+              {this.renderInput('Mobile No.', true, 'mobileNo')}
+              {this.renderInput('Email', true, 'email')}
             </div>
+          </div>
+        </div>
+        <div className='w-3/6 rounded-lg shadow-lg bg-offerPrimary p-4 mb-12'>
+          <p className='font-bold text-5xl text-left font-poppins mb-3'>
+            Airline Seatmap
+          </p>
+          <div className='flex w-5/6 h-[50vh] mt-12 justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primrary scrollbar-track-tertiary'>
+            <SeatMap selectSeat={this.selectSeatCb} />
+          </div>
+        </div>
+        <div className='w-3/6 rounded-lg shadow-lg bg-offerPrimary p-4 mb-12'>
+          <div className='flex w-full rounded-md p-4 justify-center'>
+            <button
+              className={`rounded-md text-3xl  shadow-md font-bold font-poppins uppercase py-2 px-4 ${
+                this.state.payActive
+                  ? 'bg-tertiary text-gray-200 hover:bg-tertiaryDark'
+                  : 'bg-tertiaryDeactive text-gray-300 pointer-events-none'
+              }`}>
+              Proceed to pay
+            </button>
           </div>
         </div>
       </div>

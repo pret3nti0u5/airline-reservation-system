@@ -14,6 +14,7 @@
   "author": "Vineet Vatsal",
   "license": "MIT",
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.4",
     "amadeus": "^5.7.0",
     "concurrently": "^6.2.0",
     "cookie-session": "^1.4.0",

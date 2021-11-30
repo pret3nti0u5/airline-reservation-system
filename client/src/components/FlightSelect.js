@@ -10,7 +10,7 @@ import { getOffers } from '../actions/offersActions';
 import Dropdown from './Dropdown';
 
 class FlightSelect extends React.Component {
-  state = { date: new Date(), hidden: true, class: 'Economy' };
+  state = { date: new Date(), hidden: true, class: 'Economy', nonStop: false };
 
   classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -22,7 +22,7 @@ class FlightSelect extends React.Component {
       this.props.selectedToAirport,
       this.state.date.toLocaleDateString('en-CA'),
       this.state.class.toUpperCase().split(' ').join('_'),
-      false
+      this.state.nonStop
     );
   };
 
@@ -128,6 +128,23 @@ class FlightSelect extends React.Component {
               </p>
             </div>
           </div>
+        </div>
+        <div>
+          <label className='inline-flex items-center'>
+            <input
+              type='checkbox'
+              className='form-checkbox h-5 w-5 rounded-full text-tertiary
+              focus:ring-0
+              focus:ring-offset-0
+              focus:ring-indigo-200
+              focus:ring-opacity-50'
+              checked={this.state.nonStop}
+              onChange={(e) => this.setState({ nonStop: e.target.checked })}
+            />
+            <span className='ml-2 font-bold font-poppins text-xl text-gray-700'>
+              Nonstop flights only
+            </span>
+          </label>
         </div>
         <div className='flex justify-center top-12 relative'>
           <Link

@@ -13,6 +13,7 @@ module.exports = {
         primrary: '#C62368',
         secondary: '#001220',
         tertiary: '#FA7268',
+        tertiaryDeactive: '#EE8E87',
         tertiaryDark: '#E34C67',
         gradient1: '#8A2387',
         gradient2: '#E94057',
@@ -31,5 +32,5 @@ module.exports = {
       scale: ['group-hover'],
     },
   },
-  plugins: [require('tailwind-scrollbar')],
+  plugins: [require('tailwind-scrollbar'), require('@tailwindcss/forms')],
 };

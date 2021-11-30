@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import visLogo from '../assets/images/visLogo.svg';
@@ -38,9 +39,24 @@ class FlightOffers extends React.Component {
           <p className='p-2 max-w-max font-poppins font-bold text-gray-700 text-lg bg-gray-400 rounded-md'>
             {this.handleClassType(classType)}
           </p>
-          <button className='ml-auto rounded-md bg-tertiary text-gray-200 shadow-md font-bold font-poppins uppercase py-2 px-4 hover:bg-tertiaryDark'>
+          <Link
+            to={{
+              pathname: '/booking',
+              state: {
+                departureAt,
+                arrivalAt,
+                departureIata,
+                arrivalIata,
+                carrierCode,
+                grandTotal,
+                duration,
+                classType,
+                stopsString,
+              },
+            }}
+            className='ml-auto rounded-md bg-tertiary text-gray-200 shadow-md font-bold font-poppins uppercase py-2 px-4 hover:bg-tertiaryDark'>
             Book
-          </button>
+          </Link>
         </div>
         <p className='mt-2 font-bold font-poppins text-offerSecondary text-5xl'>
           {`INR ${grandTotal}`}
