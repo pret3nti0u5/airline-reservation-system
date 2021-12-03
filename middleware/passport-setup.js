@@ -42,10 +42,13 @@ passport.use(
         const user = await User.findOne({ googleId: profile.id });
         if (!user) {
           const newUser = new User({
+            title: '',
             name: profile.displayName,
             email: profile._json.email,
+            mobileNo: '',
+            selectedSeat: '',
             googleId: profile.id,
-            score: 0,
+            bookings: [],
           });
           await newUser.save();
           return done(null, newUser);

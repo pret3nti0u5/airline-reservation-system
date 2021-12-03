@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import visLogo from '../assets/images/visLogo.svg';
 import aiLogo from '../assets/images/aiLogo.svg';
 import SeatMap from './SeatMap';
@@ -16,6 +18,30 @@ class BookingDetails extends React.Component {
     selectedSeat: '',
     payActive: false,
   };
+
+  componentDidMount() {
+    if (this.props.isSignedIn) {
+      this.setState({
+        email: this.props.user.email,
+        mobileNo: this.props.user.mobileNo,
+      });
+      if (this.props.user.title !== '') {
+        this.setState({ title: this.props.user.title });
+      }
+      if (this.props.user.name.split(' ').length === 2) {
+        this.setState({
+          firstName: this.props.user.name.split(' ')[0],
+          lastName: this.props.user.name.split(' ')[1],
+        });
+      } else if (this.props.user.name.split(' ').length === 3) {
+        this.setState({
+          firstName: this.props.user.name.split(' ')[0],
+          middleName: this.props.user.name.split(' ')[1],
+          lastName: this.props.user.name.split(' ')[2],
+        });
+      }
+    }
+  }
 
   componentDidUpdate() {
     if (
@@ -299,14 +325,18 @@ class BookingDetails extends React.Component {
         </div>
         <div className='w-3/6 rounded-lg shadow-lg bg-offerPrimary p-4 mb-12'>
           <div className='flex w-full rounded-md p-4 justify-center'>
-            <button
+            <Link
+              to={{
+                pathname: '/bookingfinal',
+                state: this.props.location.state,
+              }}
               className={`rounded-md text-3xl  shadow-md font-bold font-poppins uppercase py-2 px-4 ${
                 this.state.payActive
                   ? 'bg-tertiary text-gray-200 hover:bg-tertiaryDark'
                   : 'bg-tertiaryDeactive text-gray-300 pointer-events-none'
               }`}>
               Proceed to pay
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -314,4 +344,8 @@ class BookingDetails extends React.Component {
   }
 }
 
-export default BookingDetails;
+const mapStateToProps = (state) => {
+  return { isSignedIn: state.auth.isSignedIn, user: state.auth.user };
+};
+
+export default connect(mapStateToProps)(BookingDetails);

@@ -6,15 +6,16 @@ import Navbar from './Navbar';
 import FlightOffers from './FlightOffers';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import BookingDetails from './BookingDetails';
-// import { connect } from 'react-redux';
+import { getUser } from '../actions/authActions';
+import { connect } from 'react-redux';
+import Spinner from './Spinner';
+import BookingFinal from './BookingFinal';
 // import LoginPage from './LoginPage';
 // import Challenges from './Challenges';
 // import Leaderboards from './Leaderboards';
 // import Navbar from './Navbar';
-// import { getUser } from '../actions/authActions';
 // import { clearErrors } from '../actions/errorActions';
 // import Welcome from './Welcome';
-// import Spinner from './Spinner';
 
 class App extends React.Component {
   constructor(props) {
@@ -22,7 +23,14 @@ class App extends React.Component {
     this.myRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.props.getUser();
+  }
+
   render() {
+    if (this.props.isLoading) {
+      return <Spinner />;
+    }
     return (
       <Router>
         <Navbar />
@@ -45,6 +53,7 @@ class App extends React.Component {
           </Route>
           <Route path='/flights' component={FlightOffers} />
           <Route path='/booking' component={BookingDetails} />
+          <Route path='/bookingfinal' component={BookingFinal} />
         </Switch>
       </Router>
     );
@@ -87,10 +96,8 @@ class App extends React.Component {
   // }
 }
 
-// const mapStateToProps = (state) => {
-//   return { isSignedIn: state.auth.isSignedIn, isLoading: state.auth.loading };
-// };
+const mapStateToProps = (state) => {
+  return { isSignedIn: state.auth.isSignedIn, isLoading: state.auth.loading };
+};
 
-// export default connect(mapStateToProps, { getUser, clearErrors })(App);
-
-export default App;
+export default connect(mapStateToProps, { getUser })(App);
