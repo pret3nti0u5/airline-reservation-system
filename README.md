@@ -2,7 +2,7 @@
 
 ### A website to facilitate Airline Reservation.
 
-<div align="center"><img src="" alt="insert project image here" width="1000" /></div>
+<div align="center"><img src="https://user-images.githubusercontent.com/57453561/143996237-9e2b5ed6-f2c5-4d99-9103-ebd0043b151e.png" alt="Screenshot home of project home page" width="1008" /></div>
 <br/>
 
 ## Getting Started
