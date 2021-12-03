@@ -97,6 +97,10 @@ class BookingFinal extends React.Component {
     return (
       <div className='flex flex-col min-h-full items-center bg-gradient-to-b from-primrary via-gradient2 to-gradient3 p-5'>
         {this.renderBooking(this.props.location.state)}
+        <div className='text-center text-9xl text-offerPrimary font-poppins font-bold mt-24'>
+          <p>Your booking is confirmed.</p>
+          <p className='text-7xl mt-12'>Enjoy your flight!</p>
+        </div>
       </div>
     );
   }
