@@ -5,6 +5,7 @@
 <div align="center"><img src="https://user-images.githubusercontent.com/57453561/143996237-9e2b5ed6-f2c5-4d99-9103-ebd0043b151e.png" alt="Screenshot home of project home page" width="1008" /></div>
 <br/>
 
+Hosted [here](https://make-me-skip.herokuapp.com/)
 ## Getting Started
 
 ### Development
